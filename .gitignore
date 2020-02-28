@@ -31,3 +31,5 @@ build/
 .vscode/
 
 src/main/java/br/com/alura/forum/model/.DS_Store
+
+/eoq
