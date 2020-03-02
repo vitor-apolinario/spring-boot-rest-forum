@@ -1,7 +1,14 @@
 package br.com.alura.forum.controller;
 
+import br.com.alura.forum.config.security.TokenService;
+import br.com.alura.forum.controller.dto.TokenDto;
 import br.com.alura.forum.controller.form.LoginForm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,11 +20,26 @@ import javax.validation.Valid;
 @RequestMapping("/auth")
 public class AutenticacaoController {
 
-    @PostMapping
-    public ResponseEntity autenticar(@RequestBody @Valid LoginForm form) {
-        System.out.println(form.getEmail());
-        System.out.println(form.getSenha());
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-        return ResponseEntity.ok().build();
+    @Autowired
+    private TokenService tokenService;
+
+
+    @PostMapping
+    public ResponseEntity<TokenDto> autenticar(@RequestBody @Valid LoginForm form) {
+        UsernamePasswordAuthenticationToken dadosLogin = form.converter();
+
+        try {
+            Authentication authentication = authenticationManager.authenticate(dadosLogin);
+
+            String token = tokenService.gerarToken(authentication);
+
+            return ResponseEntity.ok(new TokenDto(token, "Bearer"));
+        } catch (AuthenticationException e) {
+            // TODO: nao devia ser 404??
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
