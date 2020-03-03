@@ -46,4 +46,12 @@ public class TokenService {
         }
     }
 
+    public Long extrairIdUsuario(String token) {
+        try {
+            String id = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+            return Long.parseLong(id);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
