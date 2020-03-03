@@ -40,6 +40,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.GET,"/topicos").permitAll()
                 .antMatchers(HttpMethod.GET,"/topicos/*").permitAll()
+                .antMatchers(HttpMethod.GET,"/actuator/**").permitAll()
                 .antMatchers(HttpMethod.POST,"/auth").permitAll()
                 .anyRequest().authenticated() // pra qualquer outra, precisa autenticar
                 .and().csrf().disable()       // like a cors?
