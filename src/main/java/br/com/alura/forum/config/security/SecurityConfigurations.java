@@ -42,10 +42,12 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/topicos/*").permitAll()
                 .antMatchers(HttpMethod.GET,"/actuator/**").permitAll()
                 .antMatchers(HttpMethod.POST,"/auth").permitAll()
+                .and().authorizeRequests().antMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated() // pra qualquer outra, precisa autenticar
                 .and().csrf().disable()       // like a cors?
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().addFilterBefore(new AutenticacaoViaTokenFilter(tokenService, usuarioRepository), UsernamePasswordAuthenticationFilter.class);
+                .and().addFilterBefore(new AutenticacaoViaTokenFilter(tokenService, usuarioRepository), UsernamePasswordAuthenticationFilter.class)
+                .headers().frameOptions().disable();
     }
 
     // configs de recursos estáticos (css, js, imgs, ...)
